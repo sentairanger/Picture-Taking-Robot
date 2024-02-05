@@ -4,6 +4,7 @@ from gpiozero import Robot, LED
 import os
 from picamera2 import Picamera2
 from datetime import datetime
+from time import sleep
 
 
 
@@ -13,6 +14,7 @@ eye = LED(25)
 
 # Define the camera and moment
 cam = Picamera2()
+cam_config = cam.create_preview_configuration()
 moment = datetime.now()
 
 # Blink eye 2 times to ensure the code is running correctly
@@ -54,8 +56,10 @@ def main(window):
             os.system('sudo shutdown now') #shutdown the pi
         if key == ord('p'):
             eye.blink(n=1)
-            filename = '/home/torvalds/Pictures/devastator_headless_%02d_%02d_%02d.jpg' % (moment.hour, moment.minute, moment.second)
-            cam.start_and_capture_file(filename, delay=0, show_preview=False)
+            cam.start()
+            sleep(3)
+            cam.capture_file('/home/torvalds/Pictures/devastator_headless_%02d_%02d_%02d.jpg' % (moment.hour, moment.minute, moment.second))
+            cam.stop()
             print("successful")
 
 
